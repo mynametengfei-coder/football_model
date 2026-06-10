@@ -2,7 +2,9 @@ import requests
 import pandas as pd
 import time
 
-API_KEY = "8f55643a19b17fd293c0f7bd1729a577"
+import os
+
+API_KEY = os.getenv("ODDS_API_KEY")
 
 SPORTS = [
     "soccer_china_superleague",
