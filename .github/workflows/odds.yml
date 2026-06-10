@@ -1,0 +1,46 @@
+name: Odds Collector
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+    - cron: '0 4 * * *'
+    - cron: '0 8 * * *'
+    - cron: '0 12 * * *'
+
+  workflow_dispatch:
+
+jobs:
+  run:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install packages
+        run: |
+          pip install pandas requests openpyxl
+
+      - name: Run Odds Fetcher
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        run: |
+          python auto_fetch_odds.py
+
+      - name: Commit files
+        run: |
+          git config user.name github-actions
+          git config user.email actions@github.com
+
+          git add .
+
+          git commit -m "update odds" || exit 0
+
+          git push
